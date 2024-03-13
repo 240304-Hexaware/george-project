@@ -13,10 +13,10 @@ public class FileService {
     @Autowired
     private FileRepository fileRepository;
 
-    public String addFile(String name, String type, byte[] contents) {
+    public File addFile(String name, String type, byte[] contents) throws IOException{
         File file = new File(name, type, contents);
         fileRepository.insert(file);
-        return file.getId();
+        return file;
     }
 
     public File getFile(String id) {
