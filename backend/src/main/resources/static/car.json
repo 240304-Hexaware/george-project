@@ -1,0 +1,15 @@
+{
+  "manufacturer": {
+    "startIndex": 0,
+    "endIndex": 19
+  },
+  "model": {
+    "startIndex": 20,
+    "endIndex": 39
+  },
+  "year": {
+    "startIndex": 40,
+    "endIndex": 43
+  }
+
+}

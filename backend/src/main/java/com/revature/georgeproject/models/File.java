@@ -1,10 +1,12 @@
 package com.revature.georgeproject.models;
 
+import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
 import java.util.Arrays;
+import java.util.Date;
 
 @Document("files")
 public class File {
@@ -14,19 +16,71 @@ public class File {
     @Field("fileName")
     private String fileName;
 
+    @Field("contentType")
+    private String contentType;
+
     @Field("fileType")
     private String fileType;
 
+    @Field("fileSize")
+    private long fileSize;
+
+//    @Field("filePath")
+//    private String filePath;
+
+    @CreatedDate
+    @Field("uploadDate")
+    private Date uploadDate;
     @Field("contents")
     private byte[] contents;
 
     public File() {
     }
 
-    public File(String fileName, String fileType, byte[] contents) {
+    public File(String fileName, long fileSize, String contentType) {
+        this.fileName = fileName;
+        this.fileSize = fileSize;
+        this.contentType = contentType;
+    }
+
+    public File(String fileName, String fileType, long fileSize, byte[] contents, String contentType) {
         this.fileName = fileName;
         this.fileType = fileType;
+        this.fileSize = fileSize;
         this.contents = contents;
+        this.contentType = contentType;
+    }
+
+    public String getContentType() {
+        return contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public long getFileSize() {
+        return fileSize;
+    }
+
+    public void setFileSize(long fileSize) {
+        this.fileSize = fileSize;
+    }
+
+//    public String getFilePath() {
+//        return filePath;
+//    }
+//
+//    public void setFilePath(String filePath) {
+//        this.filePath = filePath;
+//    }
+
+    public Date getUploadDate() {
+        return uploadDate;
+    }
+
+    public void setUploadDate(Date uploadDate) {
+        this.uploadDate = uploadDate;
     }
 
     public String getId() {
