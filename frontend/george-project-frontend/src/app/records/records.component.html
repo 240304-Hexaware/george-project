@@ -1,0 +1,23 @@
+<div>
+    <h2>View Records</h2>
+    <input type="text" [(ngModel)]="fileName">
+    <button (click)="view()">View</button>
+    <br>
+
+    <table *ngIf="fields.length > 0">
+        <thead>
+            <tr>
+                <th *ngFor="let field of getFields()">
+                    {{field}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of fields">
+                <td *ngFor="let col of getFields()">
+                    {{row[col]}}
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

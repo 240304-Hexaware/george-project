@@ -18,8 +18,14 @@ public class Record {
     @Field("createdDate")
     private Date createdDate;
 
-    @Field("sourceFile")
-    private String sourceFile;
+    @Field("uploadedBy")
+    private String username = "test";
+
+    @Field("flatSourceFile")
+    private String flatSourceFile;
+
+    @Field("specSourceFile")
+    private String specSourceFile;
 
     @Field("fields")
     private org.bson.Document fields;
@@ -27,9 +33,18 @@ public class Record {
     public Record() {
     }
 
-    public Record(String sourceFile, org.bson.Document fields) {
-        this.sourceFile = sourceFile;
+    public Record(String flatSourceFile, String specSourceFile, org.bson.Document fields) {
+        this.flatSourceFile = flatSourceFile;
+        this.specSourceFile = specSourceFile;
         this.fields = fields;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getId() {
@@ -48,12 +63,20 @@ public class Record {
         this.createdDate = createdDate;
     }
 
-    public String getSourceFile() {
-        return sourceFile;
+    public String getFlatSourceFile() {
+        return flatSourceFile;
     }
 
-    public void setSourceFile(String sourceFile) {
-        this.sourceFile = sourceFile;
+    public void setFlatSourceFile(String flatSourceFile) {
+        this.flatSourceFile = flatSourceFile;
+    }
+
+    public String getSpecSourceFile() {
+        return specSourceFile;
+    }
+
+    public void setSpecSourceFile(String specSourceFile) {
+        this.specSourceFile = specSourceFile;
     }
 
     public org.bson.Document getFields() {

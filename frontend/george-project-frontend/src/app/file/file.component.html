@@ -1,0 +1,33 @@
+<div>
+    <h2>Upload file:</h2>
+    <br>
+    <input type="file" (change)="fileSelected($event)">
+    <br><br>
+    <button (click)="upload()">Submit</button>
+    <br><br>
+    <h2>Download file:</h2>
+    <input type="text" [(ngModel)]="fileName">
+    <button (click)="saveFile()">Save</button>  
+    
+    <h2>Select Flat File</h2>
+    <mat-form-field>
+        <mat-label>File name</mat-label>
+        <mat-select [(value)]="flat">
+          @for (file of flatFiles; track file) {
+            <mat-option [value]="file.fileName">{{file.fileName}}</mat-option>
+          }
+        </mat-select>
+    </mat-form-field>
+    <h2>Select Spec File</h2>
+    <mat-form-field>
+        <mat-label>File name</mat-label>
+        <mat-select [(value)]="spec">
+        @for (file of specFiles; track file) {
+            <mat-option [value]="file.fileName">{{file.fileName}}</mat-option>
+        }
+        </mat-select>
+    </mat-form-field>
+    <div>
+        <button mat-raised-button (click)="parse()">Parse</button>
+    </div>
+</div>

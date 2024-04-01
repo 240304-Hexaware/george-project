@@ -1,6 +1,7 @@
 package com.revature.georgeproject.models;
 
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
@@ -14,6 +15,7 @@ public class File {
     private String id;
 
     @Field("fileName")
+    @Indexed(unique = true)
     private String fileName;
 
     @Field("contentType")
@@ -31,6 +33,10 @@ public class File {
     @CreatedDate
     @Field("uploadDate")
     private Date uploadDate;
+
+    @Field("uploadedBy")
+    private String username = "test";
+
     @Field("contents")
     private byte[] contents;
 
@@ -49,6 +55,15 @@ public class File {
         this.fileSize = fileSize;
         this.contents = contents;
         this.contentType = contentType;
+    }
+
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getContentType() {
