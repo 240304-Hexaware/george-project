@@ -1,0 +1,36 @@
+mat-toolbar {
+    position: fixed;
+    /* position: -webkit-sticky; */
+    top: 0;
+    z-index: 1000;
+    height: 120px;
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    padding: 20px 40px;
+    border-radius: 15px;
+    
+}
+
+.navButton {
+    border-color: #c2926c !important;
+
+}
+
+.navButton:hover {
+    background-color:  #c2926c;
+    color:white;
+}
+
+.right {
+    display: flex;
+    gap: 30px;
+}
+
+a {
+    color: #c2926c;
+    text-decoration: none;
+}
+

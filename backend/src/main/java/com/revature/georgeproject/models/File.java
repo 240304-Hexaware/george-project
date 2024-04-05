@@ -1,18 +1,20 @@
 package com.revature.georgeproject.models;
 
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Date;
 
 @Document("files")
 public class File {
     @MongoId
-    private String id;
+    private ObjectId id;
 
     @Field("fileName")
     @Indexed(unique = true)
@@ -27,15 +29,15 @@ public class File {
     @Field("fileSize")
     private long fileSize;
 
-//    @Field("filePath")
-//    private String filePath;
+    @Field("filePath")
+    private String filePath;
 
     @CreatedDate
     @Field("uploadDate")
     private Date uploadDate;
 
     @Field("uploadedBy")
-    private String username = "test";
+    private String username;
 
     @Field("contents")
     private byte[] contents;
@@ -49,12 +51,13 @@ public class File {
         this.contentType = contentType;
     }
 
-    public File(String fileName, String fileType, long fileSize, byte[] contents, String contentType) {
+    public File(String fileName, String fileType, long fileSize, byte[] contents, String contentType, String filePath) {
         this.fileName = fileName;
         this.fileType = fileType;
         this.fileSize = fileSize;
         this.contents = contents;
         this.contentType = contentType;
+        this.filePath = filePath;
     }
 
 
@@ -82,13 +85,13 @@ public class File {
         this.fileSize = fileSize;
     }
 
-//    public String getFilePath() {
-//        return filePath;
-//    }
-//
-//    public void setFilePath(String filePath) {
-//        this.filePath = filePath;
-//    }
+    public String getFilePath() {
+        return filePath;
+    }
+
+    public void setFilePath(String filePath) {
+        this.filePath = filePath;
+    }
 
     public Date getUploadDate() {
         return uploadDate;
@@ -98,11 +101,11 @@ public class File {
         this.uploadDate = uploadDate;
     }
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

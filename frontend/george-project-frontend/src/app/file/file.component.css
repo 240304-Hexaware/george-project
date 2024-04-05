@@ -1,0 +1,18 @@
+.fileBG {
+    background-color: #9a7456 ;
+    color: white;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+mat-card {
+    height: 80%;
+    width: 50%;
+    background-color:#c2926c;
+    border-radius: 12px;
+}
+
+.parseTable {
+    background-color: #9a7456;
+}

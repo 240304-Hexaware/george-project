@@ -1,6 +1,6 @@
 package com.revature.georgeproject.models;
 
-import org.springframework.data.annotation.CreatedBy;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -12,7 +12,7 @@ import java.util.Date;
 public class Record {
 
     @MongoId
-    private String id;
+    private ObjectId id;
 
     @CreatedDate
     @Field("createdDate")
@@ -47,11 +47,11 @@ public class Record {
         this.username = username;
     }
 
-    public String getId() {
+    public ObjectId getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(ObjectId id) {
         this.id = id;
     }
 

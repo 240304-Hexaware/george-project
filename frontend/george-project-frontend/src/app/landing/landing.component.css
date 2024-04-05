@@ -1,0 +1,56 @@
+@font-face {
+    font-family: 'Brittany';
+    src: url("/assets/fonts/BrittanySignature.ttf");
+}
+
+h1 {
+    color:whitesmoke ;
+    font-family: "Brittany";
+    font-size: 6vh;
+    letter-spacing: 8px;
+    text-shadow: -2px 2px 2px rgba(0,0,0,1);
+}
+
+h2 {
+    color:whitesmoke ;
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 4vh;
+    letter-spacing: 2px;
+    text-shadow: -2px 2px 2px rgba(0,0,0,1);
+}
+
+
+.bg {
+    background-color: #9a7456 ;
+    height: 100%;
+    width: 100%;
+    text-align: center;
+}
+
+mat-card {
+    height: 100%;
+    background-color:#c2926c;
+    border-radius: 12px;
+}
+
+mat-card-content {
+    display: flex;
+    margin: auto;
+}
+
+a :hover {
+    background-color: #ac754f;
+}
+
+a {
+    width: 45%;
+    height: 100%;
+    color : whitesmoke;
+    font-size: 3vh;
+    letter-spacing: 1px;
+}
+
+a {
+    text-decoration: none;
+}
+

@@ -1,0 +1,35 @@
+<div style="height:110px"></div>
+<div class="login">
+    <mat-card class="loginCard">
+        <mat-card-content>
+            <div class="logo">
+                <img ngSrc="/assets/img/Gahan_logo.png" width="150" height="150" priority>
+            </div>
+            <h1>Login</h1>
+            <mat-card class="wrongCred" [ngClass]="{'show':wrongCredentials}">
+                <p>Wrong username or password. Try again</p>
+            </mat-card>
+            <mat-form-field>
+                <mat-label>Username</mat-label>
+                <input type="text" matInput [formControl]="usernameControl">
+                <mat-error *ngIf="usernameControl.hasError('required')">
+                    Username is required
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field>
+                <mat-label>Password</mat-label>
+                <input matInput [type]="hide ? 'password' : 'text'" [formControl]="passwordControl">
+                <mat-error *ngIf="passwordControl.hasError('required')">
+                    Password is required
+                </mat-error>
+                <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+                    <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+                </button>
+            </mat-form-field>
+        
+            <button id="loginButton" mat-raised-button color="primary" (click)="login()">Login</button>
+        </mat-card-content>
+        
+    </mat-card>
+
+</div>

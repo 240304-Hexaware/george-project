@@ -1,33 +1,68 @@
-<div>
-    <h2>Upload file:</h2>
-    <br>
-    <input type="file" (change)="fileSelected($event)">
-    <br><br>
-    <button (click)="upload()">Submit</button>
-    <br><br>
-    <h2>Download file:</h2>
-    <input type="text" [(ngModel)]="fileName">
-    <button (click)="saveFile()">Save</button>  
-    
-    <h2>Select Flat File</h2>
-    <mat-form-field>
-        <mat-label>File name</mat-label>
-        <mat-select [(value)]="flat">
-          @for (file of flatFiles; track file) {
-            <mat-option [value]="file.fileName">{{file.fileName}}</mat-option>
-          }
-        </mat-select>
-    </mat-form-field>
-    <h2>Select Spec File</h2>
-    <mat-form-field>
-        <mat-label>File name</mat-label>
-        <mat-select [(value)]="spec">
-        @for (file of specFiles; track file) {
-            <mat-option [value]="file.fileName">{{file.fileName}}</mat-option>
-        }
-        </mat-select>
-    </mat-form-field>
-    <div>
-        <button mat-raised-button (click)="parse()">Parse</button>
-    </div>
+<div style="height : 120px"></div>
+<div class="fileBG">
+    <mat-grid-list cols="2" gutterSize="10%" rowHeight="500px" mat-grid-responsive>
+        <mat-grid-tile colspan="1" rowspan="1">
+            <mat-card>
+                <mat-card-content>
+                    <h2>Upload file:</h2>
+                    <input type="file" (change)="fileSelected($event)">
+                    <br><br>
+                    <button mat-raised-button (click)="upload()">Submit</button>
+                    <br><br>
+                    <label *ngIf="succesfulUpload">Upload successful!</label>
+                    <h2>Download file:</h2>
+                    <mat-form-field>
+                        <input matInput placeholder="File name to Save as" type="text" [(ngModel)]="fileName">
+                    </mat-form-field>
+                    <br>
+                    <button mat-raised-button (click)="saveFile()">Save</button>  
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="1" rowspan="1">
+            <mat-card>
+                <mat-card-content>
+                    <h2>Select Flat File</h2>
+                    <mat-form-field>
+                        <mat-label>File name</mat-label>
+                        <mat-select (click)="updateFiles()"[(value)]="flat">
+                          @for (file of flatFiles; track file) {
+                            <mat-option [value]="file.fileName">{{file.fileName}}</mat-option>
+                          }
+                        </mat-select>
+                    </mat-form-field>
+                    <h2>Select Spec File</h2>
+                    <mat-form-field>
+                        <mat-label>File name</mat-label>
+                        <mat-select (click)="updateFiles()" [(value)]="spec">
+                        @for (file of specFiles; track file) {
+                            <mat-option [value]="file.fileName">{{file.fileName}}</mat-option>
+                        }
+                        </mat-select>
+                    </mat-form-field>
+                    <div>
+                        <button mat-raised-button (click)="parse()">Parse</button>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
+    <mat-grid-list *ngIf="showRecords" cols="1" mat-grid-responsive>
+        <mat-grid-tile  class="parseTable" colspan="1" rowspan="1">
+            <mat-card >
+                <mat-card-content>
+                    <h1>Parsed Records</h1>
+                    <table mat-table [dataSource]="dataSource" matSort >
+                        <ng-container *ngFor="let field of fieldList" [matColumnDef]="field">
+                            <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by {{field}}">{{field | titlecase}}</th>
+                            <td mat-cell *matCellDef="let element">{{element[field]}}</td>
+                        </ng-container>
+                
+                        <tr mat-header-row *matHeaderRowDef="fieldList"></tr>
+                        <tr mat-row *matRowDef="let row; columns: fieldList;"></tr>
+                    </table>
+                </mat-card-content>
+            </mat-card>
+        </mat-grid-tile>
+    </mat-grid-list>
 </div>

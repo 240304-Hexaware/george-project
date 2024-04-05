@@ -1,0 +1,14 @@
+{
+  "item": {
+    "startIndex": 0,
+    "endIndex": 19
+  },
+  "units in kg": {
+    "startIndex": 20,
+    "endIndex": 22
+  },
+  "condition": {
+    "startIndex": 23,
+    "endIndex": 33
+  }
+}

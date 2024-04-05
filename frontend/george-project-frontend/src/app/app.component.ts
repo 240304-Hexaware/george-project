@@ -13,5 +13,5 @@ import { NavComponent } from "./nav/nav.component";
     imports: [RouterOutlet, FormsModule, FileComponent, RecordsComponent, NavComponent]
 })
 export class AppComponent {
-  title = 'george-project-frontend';
+  title = 'Gahan';
 }

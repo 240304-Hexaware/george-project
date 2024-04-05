@@ -1,0 +1,32 @@
+<div style="height:120px"></div>
+
+<div class="bg">
+    <mat-grid-list cols="2" gutterSize="2%" rowHeight="200px" mat-grid-responsive>
+        <mat-grid-tile colspan="2" rowspan="1">
+            <div>
+                <h1>
+                    Hello Chef {{currentUser | titlecase }}!
+                </h1>
+                <h2>What would you like to do today?</h2>
+            </div>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="1" rowspan="1">
+            <a routerLink="/file">
+                <mat-card>
+                    <mat-card-content>
+                        Upload or Parse Files
+                    </mat-card-content>
+                </mat-card>
+            </a>
+        </mat-grid-tile>
+        <mat-grid-tile colspan="1" rowspan="1">
+            <a routerLink="/records">
+                <mat-card>
+                    <mat-card-content>
+                        View Records
+                    </mat-card-content>
+                </mat-card>
+            </a>
+        </mat-grid-tile>
+    </mat-grid-list>
+</div>

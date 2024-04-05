@@ -1,17 +1,25 @@
+import { CommonModule } from '@angular/common';
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
-import { Component } from '@angular/core';
+import { AfterViewInit, Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {MatInputModule} from '@angular/material/input';
 import {MatSelectModule} from '@angular/material/select';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatButtonModule} from '@angular/material/button'
+import {MatTableDataSource, MatTableModule} from '@angular/material/table'
+import {MatSort, MatSortModule} from '@angular/material/sort'
 import { MongoFile } from '../mongo-file';
+import { FileService } from '../file.service';
+import { Record } from '../record';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
+import { UserService } from '../user.service';
 
 
 @Component({
   selector: 'app-file',
   standalone: true,
-  imports: [FormsModule, MatInputModule, MatSelectModule, MatFormFieldModule, MatButtonModule],
+  imports: [MatInputModule, MatCardModule, MatGridListModule, CommonModule, FormsModule, MatInputModule, MatSelectModule, MatFormFieldModule, MatButtonModule, MatTableModule, MatSortModule],
   templateUrl: './file.component.html',
   styleUrl: './file.component.css'
 })
@@ -23,26 +31,36 @@ export class FileComponent {
   fileName : string; 
   specFiles: MongoFile[] = []; 
   flatFiles : MongoFile[] = [];
+  records : Record[] = [];
+  fields : any[] = [];
+  fieldList : string[] = [];
   spec : string = "";
   flat : string = "";
+  showRecords : boolean = false;
+  succesfulUpload : boolean = false;
+  dataSource : any;
+  currentUser : string = '';
 
 
-  constructor(httpClient : HttpClient) {
+  constructor(httpClient : HttpClient, private fileService : FileService, private userService: UserService) {
     this.httpClient = httpClient;
     this.fileName = "";
+    this.userService.loggedIn$.subscribe(data =>{
+      this.currentUser = data.username;
+    })
   }
 
+  @ViewChild(MatSort) sort : MatSort = new MatSort();
+
   ngOnInit() {
-    let url : string = "http://localhost:8080/api/file/all";
-    let response = this.httpClient.get(url)
-    response.subscribe({
+    this.flatFiles = [];
+    this.specFiles = [];
+    let arr : MongoFile[] = [];
+    this.fileService.getAllFiles().subscribe({
       next : (data : any) => {
         data.forEach((file : MongoFile) => {
-          if (file.fileType == "flat") {
-            this.flatFiles.push(file);
-          } else if (file.fileType == "specification") {
-            this.specFiles.push(file);
-          }
+          // console.log(file);
+          arr.push(file);
         })
       },
       error : (error : HttpErrorResponse) => {
@@ -50,27 +68,29 @@ export class FileComponent {
         alert(error.message);
       },
       complete : () => {
-        // console.log(this.files);
         console.log("Response complete");
+        arr.forEach((file) =>{
+          // console.log("on init")
+          if(file.fileType == "flat") {
+            this.flatFiles.push(file);
+          } else if (file.fileType == "specification") {
+            this.specFiles.push(file);
+          }
+        })
       }
-    })
+    });
   }
 
-  parse() {
-    console.log("flat ", this.flat);
-    console.log("spec ", this.spec);
-    let url : string = "http://localhost:8080/api/file/parse";
-    const params = new HttpParams()
-      .set("file", this.flat)
-      .set("spec", this.spec);
-    
-    let options : any = {
-      params : params
-    }
-    let response = this.httpClient.post(url, null, options)
-    response.subscribe({
+
+  updateFiles() {
+    let arr : MongoFile[] = [];
+    this.flatFiles = [];
+    this.specFiles = [];
+    this.fileService.getAllFiles().subscribe({
       next : (data : any) => {
-        console.log(data)
+        data.forEach((file : MongoFile) => {
+          arr.push(file);
+        })
       },
       error : (error : HttpErrorResponse) => {
         console.log("Error: ", error);
@@ -78,6 +98,42 @@ export class FileComponent {
       },
       complete : () => {
         console.log("Response complete");
+        arr.forEach((file) =>{
+          // console.log("File ", file);
+          if(file.fileType == "flat") {
+            this.flatFiles.push(file);
+          } else if (file.fileType == "specification") {
+            this.specFiles.push(file);
+          }
+        })
+      }
+    });
+  }
+  
+  
+
+  parse() {
+    this.showRecords = true;
+    this.fields = [];
+    this.fieldList = [];
+    this.records = [];
+    this.fileService.postParsedRecords(this.flat, this.spec).subscribe({
+      next : (data : any) => {
+        console.log(data)
+        data.forEach((record : any) => {
+          this.records.push(record);
+        })
+      },
+      error : (error : HttpErrorResponse) => {
+        console.log("Error: ", error);
+        alert(error.message);
+      },
+      complete : () => {
+        console.log("Response complete");
+        this.fields = this.fileService.getFields(this.records);
+        this.dataSource = new MatTableDataSource(this.fields);
+        this.dataSource.sort = this.sort;
+        this.fieldList = this.fileService.getFieldList(this.fields);
       }
     })
 
@@ -103,27 +159,24 @@ export class FileComponent {
       responseType: 'text',
       headers: {
         contentType : this.file.type,
-        username: "gahanwang"//for our trusting system
+        username: this.currentUser//for our trusting system
       }
     };
 
     let response = this.httpClient.post(url, form, options);
     response.subscribe({
       next : (data : any) => {
-        // let headers = data.headers;
-        // let keys = headers.keys();
-        // for (let key of keys) {
-        //   console.log(key, headers.get(key));
-        // }
         let contentType : any = options.headers.contentType;
         let fileBody : string | null = data.body;
         if (contentType == "") {
           contentType = "application/octet-stream";
         }
         this.downloadFile = new Blob([fileBody as string], {type : contentType});
+        this.succesfulUpload = true;
       },
       error : (error : HttpErrorResponse) => {
         console.log("Error: ", error);
+        // console.log(error.status === 409);
         alert(error.message);
       },
       complete : () => {

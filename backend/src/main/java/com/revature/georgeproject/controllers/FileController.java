@@ -7,6 +7,7 @@ import com.revature.georgeproject.models.File;
 import com.revature.georgeproject.models.Record;
 import com.revature.georgeproject.services.FileService;
 import org.bson.Document;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
@@ -34,8 +35,8 @@ public class FileController {
 
     @PostMapping("/file")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<String> addFile(@RequestParam("file") MultipartFile file) throws IOException {
-        File f = fileService.addFile(file);
+    public ResponseEntity<String> addFile(@RequestParam("file") MultipartFile file, @RequestHeader String username) throws IOException {
+        File f = fileService.addFile(file, username);
         return ResponseEntity.ok(fileService.readAllBytes(file));
     }
 
@@ -45,9 +46,21 @@ public class FileController {
         return ResponseEntity.ok(fileService.getAllFiles());
     }
 
+    @GetMapping("/file/flat")
+    @ResponseStatus(HttpStatus.FOUND)
+    public ResponseEntity<List<File>> getAllFlatFiles() {
+        return ResponseEntity.ok(fileService.getAllFlatFiles());
+    }
+
+    @GetMapping("/file/spec")
+    @ResponseStatus(HttpStatus.FOUND)
+    public ResponseEntity<List<File>> getAllSpecFiles() {
+        return ResponseEntity.ok(fileService.getAllSpecFiles());
+    }
+
     @GetMapping("/file/{id}")
     @ResponseStatus(HttpStatus.FOUND)
-    public ResponseEntity<File> getFile(@PathVariable String id) {
+    public ResponseEntity<File> getFile(@PathVariable ObjectId id) {
         File f = fileService.getFile(id);
 
         return ResponseEntity.ok(f);
@@ -55,24 +68,47 @@ public class FileController {
 
     @GetMapping("/file/{id}/contents")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<String> getContents(@PathVariable String id) throws IOException {
+    public ResponseEntity<String> getContents(@PathVariable ObjectId id) throws IOException {
         return ResponseEntity.ok(fileService.readContents(fileService.getFile(id)));
     }
 
-    @GetMapping("/records/{name}")
+    @GetMapping("/records")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Record>> getAllRecordsByFileName(@PathVariable String name) {
-        return ResponseEntity.ok(fileService.getAllRecordsByFlatFile(name));
+    public ResponseEntity<List<Record>> getAllRecords() {
+        return ResponseEntity.ok(fileService.getAllRecords());
+    }
+
+    @GetMapping(value = "/records/", params = "flat")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<Record>> getAllRecordsByFlatFile(@RequestParam("flat") String flat) {
+        return ResponseEntity.ok(fileService.getAllRecordsByFlatFile(flat));
+    }
+
+    @GetMapping(value = "/records/", params = "spec")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<Record>> getAllRecordsBySpecFile(@RequestParam("spec") String spec) {
+        return ResponseEntity.ok(fileService.getAllRecordsBySpecFile(spec));
+    }
+
+    @GetMapping(value = "/records/", params = "user")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<Record>> getAllRecordsByUser(@RequestParam("user") String user) {
+        return ResponseEntity.ok(fileService.getAllRecordsByUser(user));
+    }
+
+
+    @GetMapping("/records/")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity<List<Record>> getAllRecordsByFlatAndSpecFile(@RequestParam("flat") String flat, @RequestParam("spec") String spec) throws IOException {
+        return ResponseEntity.ok(fileService.getAllRecordsByFlatAndSourceFile(flat, spec));
     }
 
     @PostMapping("/file/parse")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<List<Record>> parse(@RequestParam("file") String file, @RequestParam("spec") String spec) throws IOException {
+    public ResponseEntity<List<Record>> parse(@RequestParam("flat") String file, @RequestParam("spec") String spec, @RequestHeader String username) throws IOException {
         File flatFile = fileService.getFileByName(file);
-        String flatName = flatFile.getFileName();
         File specFile = fileService.getFileByName(spec);
-        String specName = specFile.getFileName();
-        return ResponseEntity.ok(fileService.getAllRecordsByFlatAndSourceFile(flatName, specName));
+        return ResponseEntity.ok(fileService.storeRecords(flatFile, specFile, username));
     }
 
 //    @PostMapping("/file/parse")
@@ -82,14 +118,13 @@ public class FileController {
 //        File specFile = fileService.getFileByName(spec);
 //        return fileService.storeRecords(flatFile, specFile);
 //    }
-
-    @PostMapping("/test")
-    @ResponseStatus(HttpStatus.OK)
-    public String test(@RequestParam("file") MultipartFile file,@RequestParam("spec") MultipartFile spec) throws IOException {
-//        Map<String, Field> map = fileService.parseSpecFields(spec);
-        fileService.storeRecords(file, spec);
-        return "ok";
-    }
+//
+//    @PostMapping("/test")
+//    @ResponseStatus(HttpStatus.OK)
+//    public String test(@RequestParam("file") MultipartFile file,@RequestParam("spec") MultipartFile spec) throws IOException {
+//        fileService.storeRecords(file, spec);
+//        return "ok";
+//    }
 
     @ExceptionHandler(MongoWriteException.class)
     @ResponseStatus(HttpStatus.CONFLICT)
